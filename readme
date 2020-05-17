@@ -1,0 +1,147 @@
+
+Usage for init profiles:
+  cp -r --parents etc /
+
+#-----------------#
+# Env
+#-----------------#
+
+#Install default
+apt install ssh vim screen bash-completion
+apt install git wget curl
+
+# 
+# /etc/profile.d/alias.sh
+# !Do not edit /etc/bash.bashrc
+#
+export PS1='\[\e[1;35m\][\[\e[1;33m\]\u@\h \[\e[1;31m\]\w\[\e[1;35m\]]\[\e[1;36m\]\$ \[\e[0m\]' 
+alias grep='grep --colour=auto'
+alias egrep='egrep --colour=auto'
+alias fgrep='fgrep --colour=auto'
+
+eval "`dircolors`"
+alias ll='ls $LS_OPTIONS -l'
+alias l='ls $LS_OPTIONS -lA'
+export LS_OPTIONS='--color=auto'
+
+screen -Rd "work"
+
+# /etc/screenrc
+hardstatus on
+hardstatus alwayslastline "%{= KW} %H %{= Kw}|%{-} %-Lw%{= bW}%n%f %t%{-}%+Lw %=%C%a %Y-%M-%d"
+shell -$SHELL
+
+# /etc/vim/vimrc.local
+  set paste
+  colorscheme elflord
+
+#-----------------#
+#  Config network
+#-----------------#
+
+# Config ip address
+# /etc/network/interfaces
+auto eth0
+iface eth0 inet static
+        address 10.5.183.136
+        netmask 255.255.255.0
+        gateway 10.5.183.254
+        up ip addr add 10.5.183.133/24 dev eth0
+# Config dns
+# /etc/resolv.conf
+nameserver 10.5.183.120
+nameserver 10.5.183.110
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+#
+# Apply Changes
+ifdown eth0 && ifup eth0
+# or
+systemctl restart networking.service
+service networking restart
+
+#-----------------#
+# Mount cifs (share from smb)
+#
+
+# Install tools
+apt install cifs-utils
+
+# A)mount manully
+mount.cifs -o uid=emeric,domain=emb,username=lee,password=*** //10.5.183.137/d$ /mnt/137-d
+
+# b)Edit File /etc/fstab
+# df or mount -l to check status
+
+# mount -a to reload file-fstab
+//10.5.183.126/asb/borgs  /mnt/borgs cifs vers=2.1,file_mode=0660,dir_mode=0770,uid=borg_serve,gid=backup,credentials=/root/cifs.creds/126_borg.emb
+//10.5.183.132/www /mnt/code/132-www cifs vers=1.0,file_mode=0770,dir_mode=0770,uid=emeric,credentials=/root/cifs.creds/132_www.ysh
+//10.5.183.137/d$  /mnt/code/137-d   cifs vers=2.1,file_mode=0770,dir_mode=0770,uid=emeric,credentials=/root/cifs.creds/137_app.emb
+
+#-----------------#
+#  Security
+#-----------------#
+
+#/etc/hosts/deny
+  rpcbind: All 		#for rpc(portmap) security
+
+#-----------------#
+#  LVM & borgs
+#-----------------#
+
+#1.Config the server 
+#(1)Config the store
+#  Auto mount /mnt/borgs to 10.5.183.126/asb/borgs
+#  (df) or (mount -l) can be used for check status
+#File: /etc/fstab  
+//10.5.183.126/asb/borgs /mnt/borgs cifs credentials=/root/cifs.cred.borg_126,uid=backup
+
+
+#(2)Config listening Servicer
+#  By ssh and as user(borg_serve)
+#  Register every client to /home/borg_serve/.ssh/authorized_keys with force command and  restrict-to-path
+#  Detail can be seen in the file
+
+#2.Config the host witch need backup
+#(1)setup lvm
+#(2)backup manully
+#(3)backup as service (systemctl)
+#   Detail see /usr/local/bin/borg-em.sh...
+
+
+#-----------------#
+#  Webmin         :10000
+#-----------------#
+Config:(:10000)
+  /etc/webmin/
+
+#----------------#
+#   OwnCloude :10443 (deprated)
+#----------------#
+Setup:
+ Apach2: 10443/owncloude		
+ www root: /var/www/owncloud
+ Upgrade: use the web admin panel.
+
+#-----------------#
+#  nextcloud-DOCKER : 80,443
+#-----------------#
+
+/mnt/store/dockers/nextcloud
+
+#-----------------#
+#   Gitea -DOCKER :3000
+#-----------------#
+
+/mnt/store/dockers/gitea
+
+location:  	/var/docker/gitea
+config:		./docker-compose.yml
+runing:		docker-compose up -d
+
+#-----------------#
+#  v2ray -DOCKER
+#-----------------#
+
+/mnt/store/dockers/vpn/
+
