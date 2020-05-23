@@ -25,7 +25,8 @@ apt install docker-compose borgbackup
 timedatectl set-timezone Asia/Shanghai
 ```
 
-## /etc/profile.d/alias.sh
+## Profiles
+### /etc/profile.d/alias.sh
 Use profile.ld, not edit /etc/bash.bashrc
 
 ```
@@ -42,14 +43,14 @@ export LS_OPTIONS='--color=auto'
 screen -Rd "work"
 ```
 
-## /etc/screenrc
+### /etc/screenrc
 ```
 hardstatus on
 hardstatus alwayslastline "%{= KW} %H %{= Kw}|%{-} %-Lw%{= bW}%n%f %t%{-}%+Lw %=%C%a %Y-%M-%d"
 shell -$SHELL
 ```
 
-## /etc/vim/vimrc.local (optional)
+### /etc/vim/vimrc.local (optional)
 ```
   set paste
   colorscheme elflord
