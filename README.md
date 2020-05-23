@@ -79,7 +79,18 @@ or
 `systemctl restart networking.service`
 
 
-## Mount cifs (share from smb)
+##  LVM & borg backup
+Details see: [borg-em](https://github.com/EmericLee/borg-em)
+LVM manager
+```sh
+vgcreate vg-name /dev/sdb			#create vg, vg-name can set as lvmsdb, sdb is the disk name
+lvcreate -L 180G -n lv-name vg-name		#create lv, lv-name can set as lva
+lvs						#show lvs list
+mkfs.ext4 /dev/mapper/vg-name--lv-namee		#init(format) the new lv. see /dev/mapper/lvmsdb-lva
+mount /dev/mapper/vg-name--lv-name /mnt/store	#mount the new lv
+```
+
+## Mount lv & cifs (share from smb)
 
 ### Install tools
 apt install cifs-utils
@@ -93,29 +104,20 @@ mount.cifs -o uid=local-user-name,domain=domain-name,username=user-name,password
 Edit File /etc/fstab
 
 ```
+#mount root & boot
+/dev/mapper/root-lv-maper-name		/               ext4    errors=remount-ro 0       1
+UUID=UUID-boot-4cc0-bef5-b0d7a80c3125 	/boot           ext2    defaults        0       2
+#mount append store
+/dev/mapper/append-lv-mapper-name	/mnt/path 	ext3 	defaults 	0	 0
+
+# moutn cifs
 /remote/share/name /local/path/to/mount cifs vers=2.1,file_mode=0660,dir_mode=0770,uid=local-user,gid=local-group,credentials=/credentials/path/file
+
 ```
 check and reload
 ``` 
 df or mount -l to check status
 mount -a to reload file-fstab
-```
-##  Security
-
-/etc/hosts/deny
-```
-  rpcbind: All 		#for rpc(portmap) security
-```
-
-##  LVM & borg backup
-Details see: [borg-em](https://github.com/EmericLee/borg-em)
-LVM manager
-```sh
-vgcreate vg-name /dev/sdb			#create vg, vg-name can set as lvmsdb, sdb is the disk name
-lvcreate -L 180G -n lv-name vg-name		#create lv, lv-name can set as lva
-lvs						#show lvs list
-mkfs.ext4 /dev/mapper/vg-name--lv-namee		#init(format) the new lv. see /dev/mapper/lvmsdb-lva
-mount /dev/mapper/vg-name--lv-name /mnt/store	#mount the new lv
 ```
 
 ## Install borg-em
@@ -128,6 +130,15 @@ borg-em list					#check is ok
 ```
 
 ## Some misc
+
+### Security
+
+/etc/hosts/deny
+```
+  rpcbind: All 		#for rpc(portmap) security
+```
+### rsync
+
 ```
 rsync -a --info=progress2 /path/of/source /path/to/target
 ```
