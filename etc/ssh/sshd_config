@@ -119,7 +119,14 @@ Subsystem	sftp	/usr/lib/openssh/sftp-server
 #	AllowTcpForwarding no
 #	PermitTTY no
 #	ForceCommand cvs server
-PasswordAuthentication no
-Match User user
-    PasswordAuthentication yes
-Match All
+
+# Allow password authentication for all users
+
+PasswordAuthentication yes
+
+# Allow password authentication for special users
+
+#PasswordAuthentication no
+#Match User userr
+#    PasswordAuthentication yes
+#Match All
