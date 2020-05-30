@@ -143,3 +143,8 @@ borg-em list					#check is ok
 ```
 rsync -a --info=progress2 /path/of/source /path/to/target
 ```
+
+### file&directories permissions(ACL)
+chmod -R g+s .
+setfacl -Rbkd -m g::rwx -m o:- .   # Maybe run first: apt install acl 
+
