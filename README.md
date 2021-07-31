@@ -8,7 +8,8 @@ It will cp all the predefined conf files to `/etc`.
 Include bash screen bash-auto-complete sshd & source.list(to china mirror).
 ```
 git clone https://github.com/EmericLee/em-init-linux.git
-cd em-init-linux
+mv ./em-init-linux /usr/
+cd /usr/em-init-linux
 ./init-install.sh
 ```
 
