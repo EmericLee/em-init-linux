@@ -7,10 +7,27 @@ Just run script.
 It will cp all the predefined conf files to `/etc`.
 Include bash screen bash-auto-complete sshd & source.list(to china mirror).
 ```
+
+#Update & install default tools
+apt update
+apt upgrade
+apt install ssh vim screen bash-completion rsync git wget curl aptitude docker-compose
+
+#Set name & timezone
+timedatectl set-timezone Asia/Shanghai
+hostnamectl set-hostname hostname.name.name
+
+#Init bash 
 git clone https://github.com/EmericLee/em-init-linux.git
 mv ./em-init-linux /usr/
 cd /usr/em-init-linux
 ./init-install.sh
+
+#Install ActiveBackupBusinessAgent
+ wget https://cndl.synology.cn/download/Utility/ActiveBackupBusinessAgent/2.4.2-2341/Linux/x86_64/Synology%20Active%20Backup%20for%20Business%20Agent-2.4.2-2341-x64-deb.zip
+unzip Synology\ Active\ Backup\ for\ Business\ Agent-2.4.2-2341-x64-deb.zip  -d ./abb
+./abb/install.run
+
 ```
 
 ---
