@@ -2,6 +2,8 @@
 Quick init linux enveroment .Include bash screen sshd vim source.list etc.
 By emeric.lee 2020.
 
+快速初始化Linux环境，包括Bash、screen、sshd、vim、配置软件源等。
+
 ## Quick install
 Just run script.
 It will cp all the predefined conf files to `/etc`.
